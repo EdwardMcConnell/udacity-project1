@@ -17,9 +17,9 @@ usual_suspects = media.Movie("The Usual Suspects",
                              "https://www.youtube.com/watch?v=oiXdPolca5w")
 
 school_of_rock = media.Movie("School of Rock",
-                             "",
+                             "Just amazing...",
                              "https://upload.wikimedia.org/wikipedia/en/1/11/School_of_Rock_Poster.jpg",
-                             "")
+                             "https://www.youtube.com/watch?v=XCwy6lW5Ixc")
 
 
 movies = [toy_story, avatar, usual_suspects, school_of_rock]
