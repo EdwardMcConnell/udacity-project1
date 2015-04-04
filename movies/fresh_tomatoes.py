@@ -11,11 +11,13 @@ main_page_head = '''
     <!-- Bootstrap 3 -->
     <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap-theme.min.css">
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
     <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
     <script src="https://netdna.bootstrapcdn.com/bootstrap/3.1.0/js/bootstrap.min.js"></script>
     <style type="text/css" media="screen">
         body {
             padding-top: 80px;
+            font-family: 'Open Sans', sans-serif;
         }
         #trailer .modal-dialog {
             margin-top: 200px;
@@ -35,6 +37,8 @@ main_page_head = '''
         .movie-tile {
             margin-bottom: 20px;
             padding-top: 20px;
+            -webkit-transition:background-color .25s;
+            transition:background-color .25s;
         }
         .movie-tile:hover {
             background-color: #EEE;
@@ -53,9 +57,56 @@ main_page_head = '''
             top: 0;
             background-color: white;
         }
+
+        /* Added classes for customized display */
+        
         .non-family-friendly:hover {
-            background-color: pink;
+            background-color: #FFBFBF;
         }
+        .non-family-friendly-rating {
+            background-color: #FFBFBF!important;
+        }
+        .poster-container {
+            position:relative;
+        }
+        .rating {
+            font-size: 24px;
+            font-weight: bold;
+            width:75px;
+            height:40px;
+            border-radius: 10px;
+            background-color:#888;
+            color:#000;
+            opacity: .3;
+            position:absolute;
+            bottom:5px;
+            right:70px;
+            -webkit-transition:opacity .25s;
+            transition:opacity .25s;
+            line-height:40px;
+        }
+        .rating-hover {
+            opacity: .8
+        }
+        .legend-item {
+            width: 25px;
+            height:25px;
+            display: inline-block;
+        }
+        .legend {
+            margin-bottom: 20px;
+        }
+        .synopsis {
+            text-align:justify;
+        }
+        .detail {
+            font-size: 11px;
+            font-weight: bold;
+            font-family: sans-serif;
+            margin-bottom: 15px;
+        }
+
+        /* End customized css */
     </style>
     <script type="text/javascript" charset="utf-8">
         // Pause the video when the modal is closed
@@ -80,6 +131,20 @@ main_page_head = '''
           $('.movie-tile').hide().first().show("fast", function showNext() {
             $(this).next("div").show("fast", showNext);
           });
+        });
+
+        // Highlight the movie rating when hovering
+        $(document).on('mouseover', '.movie-tile', function(e) {
+            $(this).find('.rating').addClass('rating-hover');
+            if($(this).hasClass('non-family-friendly')) {
+              $(this).find('.rating').addClass('non-family-friendly-rating');
+            }
+        });
+
+        //Unhighlight the movie rating
+        $(document).on('mouseout', '.movie-tile', function(e) {
+            $(this).find('.rating').removeClass('rating-hover');
+            $(this).find('.rating').removeClass('non-family-friendly-rating');
         });
     </script>
 </head>
@@ -114,6 +179,10 @@ main_page_content = '''
       </div>
     </div>
     <div class="container">
+      <!--// Added legend to identify non-family-friendly movies prior to viewing preview //-->
+      <div class="legend">
+        <span class="legend-item non-family-friendly-rating">&nbsp;</span> - Indicates non-family-friendly movies. Parental discretion is advised.
+      </div>
       {movie_tiles}
     </div>
   </body>
@@ -123,8 +192,17 @@ main_page_content = '''
 # A single movie entry html template
 movie_tile_content = '''
 <div class="col-md-6 col-lg-4 movie-tile text-center {non_family_style}" data-trailer-youtube-id="{trailer_youtube_id}" data-toggle="modal" data-target="#trailer">
-    <img src="{poster_image_url}" width="220" height="342">
+    <div class="poster-container">
+      <img src="{poster_image_url}" width="220" height="342">
+      <div class="rating">{rating}</div>
+    </div>
     <h2>{movie_title}</h2>
+    <div class="detail">
+      Released: {release_date}
+      <br/>
+      Run Time: {runtime} minutes
+    </div>
+    <p class="synopsis">{synopsis}</p>
 </div>
 '''
 
@@ -143,7 +221,11 @@ def create_movie_tiles_content(movies):
             movie_title=movie.title,
             poster_image_url=movie.poster_image_url,
             trailer_youtube_id=trailer_youtube_id,
-            non_family_style=mystyle
+            non_family_style=mystyle,
+            rating=movie.rating,
+            synopsis=movie.synopsis,
+            release_date=movie.release_date,
+            runtime=movie.duration
         )
     return content
 

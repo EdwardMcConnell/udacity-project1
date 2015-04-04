@@ -1,6 +1,10 @@
+# Movie class
 import media
+
+# Udacity Fresh tomatoes module
 import fresh_tomatoes
 
+# Create Movie objects
 toy_story = media.Movie("Toy Story", 
                         "https://www.movieposter.com/posters/archive/main/15/A70-7642",
                         "https://www.youtube.com/watch?v=KYz2wyBy3kc",
@@ -25,6 +29,8 @@ usual_suspects = media.Movie("The Usual Suspects",
                              108,
                              "August 16, 1995")
 
-
+# Add Movies to list
 movies = [toy_story, avatar, usual_suspects]
+
+# Generate HTML and open in browser
 fresh_tomatoes.open_movies_page(movies)
